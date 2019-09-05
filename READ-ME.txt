@@ -1,0 +1,10 @@
+Para executar o programa, o "arquivo.txt" deve estar na mesma pasta / local que o programa .py.
+
+O arquivo.txt contém na primeira linha a capacidade máxima da mochila e nas linhas restantes, tem uma dupla de números que se refere a:
+
+a b
+
+onde a = peso e b = valor
+
+O programa vai resolver o *problema da mochila fracionária*, onde procura colocar na bolsa os itens mais valiosos, tirando 1kg por vez,
+respeitando a capacidade da mochila. O código procura sempre a solução de melhor caso para o problema. 
