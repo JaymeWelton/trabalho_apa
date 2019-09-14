@@ -19,5 +19,7 @@ python run.py instancias/"nome da instancia" -c nearest - m "algoritmo" --vnd-me
 exemplos:
 
 python run.py instancias/P-n19-k2.txt -c nearest 
+
 python run.py instancias/P-n19-k2.txt -c nearest - m swap
+
 python run.py instancias/P-n19-k2.txt -c nearest - m vnd --vnd-methods 1opt 2opt swap
