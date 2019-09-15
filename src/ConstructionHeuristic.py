@@ -73,29 +73,37 @@ class ConstructionHeuristic():
         return solucao_inicial, custo
 
 
-    def construct_nearest(self, instance):
+  #  def construct_nearest(self, instance):
             
-            data_graph = instance.data2        
-            veiculos = instance.veiculo  
-            capacidade_max = instance.capacidade
-            demandas = instance.demanda
+   #         data_graph = instance.data2        
+    #        veiculos = instance.veiculo  
+     #       capacidade_max = instance.capacidade
+      #      demandas = instance.demanda
             
-            return self.vizinho_Proximo(data_graph, veiculos, capacidade_max, demandas)        
+       #     return self.vizinho_Proximo(data_graph, veiculos, capacidade_max, demandas)        
 
-    #def construct_nearest(self, instance, inital=0):
-    #   data_graph = instance.data
-    #    initial_solution = [data_graph[inital]]
-    #
-    #    while len(initial_solution) < instance.dimension:
-    #        last_node = initial_solution[-1]
-    #        nearest_nodes = sorted(last_node.neighborhood,
-    #                               key=(lambda x: x.cost))                
-   # 
-   #         for neighbor in nearest_nodes[1:]:
-   #             if neighbor.node.key not in [node.key for node in initial_solution]:
-   #                 initial_solution.append(neighbor.node)
-   #                break
-   #
-   #     return initial_solution  
-   
+        def construct_nearest(self, instance, inital=0):
+            """Construct the inital solution
+    
+            Arguments:
+                instance {Instance} -- instance object
+    
+            Returns:
+                list -- initial solution
+            """
+            data_graph = instance.data
+            initial_solution = [data_graph[inital]]
+    
+            while len(initial_solution) < instance.dimension:
+                last_node = initial_solution[-1]
+                nearest_nodes = sorted(last_node.neighborhood,
+                                       key=(lambda x: x.cost))                
+    
+                for neighbor in nearest_nodes[1:]:
+                    if neighbor.node.key not in [node.key for node in initial_solution]:
+                        initial_solution.append(neighbor.node)
+                        break
+    
+            return initial_solution  
+
    

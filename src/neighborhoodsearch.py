@@ -61,7 +61,7 @@ def one_opt_method(initial_solution,  min_cost, is_first=False):
                     has_improvement = True
                     min_cost = candidate_cost       # Change the lowest cost
                     # Change the best solution
-                    current_solution = swap_1opt(candidate_cost, i, j)
+                    current_solution = swap_1opt(current_solution, i, j)
 
                     if is_first:
                         break
