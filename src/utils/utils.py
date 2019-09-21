@@ -1,0 +1,91 @@
+# -*- coding: utf-8 -*-
+
+def calculate_cost(solution, matriz):
+    cost = 0
+    size_points = len(solution)
+    
+    for i in range(size_points):
+        index = solution[i]
+        next_index = solution[i+1] if (i + 1) < size_points else 0  
+        next_neighbor = matriz[index][next_index]
+        cost += next_neighbor
+
+    return cost
+
+
+def __get_index_neighborhood(solution, index):
+    prev_node = solution[index - 1] if index > 0 else -1
+    node = solution[index]
+    next_node = solution[index + 1 if index + 1 < len(solution) else 0]
+
+    return prev_node, node, next_node
+
+
+def __get_cost(node, prev_key, next_key, matriz):
+    cost = 0
+
+    if prev_key != -1:
+        cost += matriz[node][prev_key]
+    cost += matriz[node][next_key]
+
+    return cost
+
+
+def calculate_swap_cost(solution, i, j, matriz, is_2opt=False):
+
+    prev_i, i_key, next_i = __get_index_neighborhood(solution, i)
+    prev_j, j_key, next_j = __get_index_neighborhood(solution, j)
+    i_node = solution[i]
+    j_node = solution[j]
+
+    old_i_cost = __get_cost(i_node, prev_i, next_i, matriz)
+    old_j_cost = __get_cost(j_node, prev_j, next_j, matriz)
+    new_i_cost = 0
+    new_j_cost = 0
+    diff_return_cost = 0
+
+    if is_2opt:
+        next_i, prev_j = prev_j, next_i
+
+    if j - i == 1:
+        prev_j = j_node
+        next_i = i_node
+    elif j == len(solution) - 1 and i == 0:
+        next_j = j_node
+
+    new_i_cost = __get_cost(j_node, prev_i, next_i, matriz)
+    new_j_cost = __get_cost(i_node, prev_j, next_j, matriz)
+
+    if i == 0 and j != len(solution) - 1:
+        old_return_cost = matriz[-1][i_key]
+        new_return_cost = matriz[-1][j_key]
+        diff_return_cost = new_return_cost - old_return_cost
+
+    return (new_i_cost - old_i_cost) + (new_j_cost - old_j_cost) + diff_return_cost
+
+
+
+def swap_neighborhood(solution, i, j):
+    solution[i], solution[j] = solution[j], solution[i]
+
+    return solution
+
+def swap_1opt(solution, i, j):
+    if i == 0:
+        solution[i:j+1] = solution[j::-1]
+    else:
+        solution[i:j+1] = solution[j:i-1:-1]
+
+    return solution
+
+
+def swap_2opt(solution, i, j):
+    if i == 0:
+        solution[i:j+1] = solution[j::-1]
+    else:
+        solution[i:j+1] = solution[j:i-1:-1]
+
+    return solution
+
+
+
