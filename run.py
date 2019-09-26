@@ -35,7 +35,7 @@ def main(args):
                 meta_solution, novademanda = construction.construct_meta(instance, 100, novademanda, args.vnd_methods) 
                 initial_solution.append(meta_solution)
             
-            print("Rota %d pelo GRASP: " %(i+1), initial_solution)
+            print("Rota %d pelo GRASP: " %(i+1), meta_solution)
             custo[i] = calculate_cost(meta_solution, matriz_de_Custos)
             print("Custo da rota %d = %d" % (i+1, custo[i]))
             custo_total += custo[i]
