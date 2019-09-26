@@ -63,6 +63,8 @@ def calculate_swap_cost(solution, i, j, matriz, is_2opt=False):
 
     return (new_i_cost - old_i_cost) + (new_j_cost - old_j_cost) + diff_return_cost
 
+   
+
 
 
 def swap_neighborhood(solution, i, j):

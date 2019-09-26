@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import random
+from src.utils.utils import calculate_cost 
+from src.neighborhoodsearch import swap_method
+
 class ConstructionHeuristic():
 
         
@@ -45,9 +49,8 @@ class ConstructionHeuristic():
         return maior       
            
 
-    def vizinho_Proximo (self, lista_Arestas, quantidade_Veiculos, capacidade_Maxima, demandas, nome):    
-        
-        custo = [0]*quantidade_Veiculos    
+    def vizinho_Proximo (self, lista_Arestas, quantidade_Veiculos, capacidade_Maxima, demandas, nome):           
+           
         veiculo_atual = 0
         solucao_inicial = []
         solucao_da_rota = [0]  
@@ -62,9 +65,8 @@ class ConstructionHeuristic():
                     if nome == "P-n23-k8\n":
                         cliente = self.procura_maior(lista_Arestas, 0, demandas, capacidade_atual)
                     else:   
-                        cliente = self.procura_Menor(lista_Arestas, 0, demandas, capacidade_atual) 
-                        
-                    custo[veiculo_atual] += lista_Arestas[0][cliente]
+                        cliente = self.procura_Menor(lista_Arestas, 0, demandas, capacidade_atual)                         
+                    
                     capacidade_atual -= demandas[cliente]
                     solucao_da_rota.append(cliente)                  
                     demandas[cliente] = 0                    
@@ -79,8 +81,7 @@ class ConstructionHeuristic():
                     else: 
                         cliente = 0
                         
-                    if cliente > 0: 
-                        custo[veiculo_atual] += lista_Arestas[cliente_Anterior][cliente]
+                    if cliente > 0:                         
                         capacidade_atual -= demandas[cliente] 
                         solucao_da_rota.append(cliente) 
                         demandas[cliente] = 0
@@ -88,7 +89,7 @@ class ConstructionHeuristic():
                         #todos os clientes ja foram visitados ou não cabe mais carga no veiculo
                         cabe_Mais = False
                         solucao_da_rota.append(cliente) #cliente é 0                        
-                        custo[veiculo_atual] += lista_Arestas[cliente_Anterior][cliente]                        
+                                             
                         
                     
             else: 
@@ -101,18 +102,132 @@ class ConstructionHeuristic():
         
         return solucao_inicial
     
-   
-
+    
     def construct_nearest(self, instance):
             
-            data_graph = instance.data2        
-            veiculos = instance.veiculo  
-            capacidade_max = instance.capacidade
-            demandas = instance.demanda
-            nome = instance.name
+        data_graph = instance.data2        
+        veiculos = instance.veiculo  
+        capacidade_max = instance.capacidade
+        demandas = instance.demanda
+        nome = instance.name
+        
+        return self.vizinho_Proximo(data_graph, veiculos, capacidade_max, demandas, nome)  
+    
+   
+       
             
-            return self.vizinho_Proximo(data_graph, veiculos, capacidade_max, demandas, nome)        
+    def construct_random(self, varianca, lista_Arestas, capacidade_Maxima, demanda):
+        
+        cliente = 0 # está no deposito 
+        rotafinal = [0]        
+        capacidade_atual = capacidade_Maxima
+        menor = maior = 0
+        cabe_Mais = True
+        LCR = []
+        cidade_random = 0
+        demandas = demanda.copy()
+         
+        while cabe_Mais == True:
+            
+            if cliente == 0: 
+                
+                for i in range(1, len(demandas)):
+                                            
+                    if menor == 0 and demandas[i] > 0 or lista_Arestas[0][i] < menor and demandas[i] > 0:
+                            if capacidade_atual - demandas[i] >= 0: 
+                                menor = lista_Arestas[0][i]
+                            if maior == 0:
+                                maior = lista_Arestas[0][i]
+                            
+                    elif lista_Arestas[0][i] > maior:
+                            maior = lista_Arestas[0][i]
+                            
+                            
+                for i in range(1, len(demandas)):
+                    if lista_Arestas[0][i] <= (menor + (varianca*(maior - menor))) and demandas[i] > 0:                        
+                        LCR.append(i)
+                        
+                       
+                cidade_random = random.sample(LCR, 1)      
+                capacidade_atual -= demandas[cidade_random[0]] 
+                demandas[cidade_random[0]] = 0 
+                rotafinal.append(cidade_random[0])
+                cliente = 1
+                    
+                            
+            else:                     
+                cliente_anterior = cidade_random[0]                    
+                LCR = []
+                
+                if capacidade_atual > 0:    
+                    
+                    menor = maior = 0
+                    
+                    for i in range(1, len(demandas)):
+                        
+                        if menor == 0 and demandas[i] > 0 or lista_Arestas[cliente_anterior][i] < menor and demandas[i] > 0:
+                            if capacidade_atual - demandas[i] >= 0: 
+                                menor = lista_Arestas[cliente_anterior][i]
+                            if maior == 0:
+                                maior = lista_Arestas[cliente_anterior][i]
+                            
+                        elif lista_Arestas[cliente_anterior][i] > maior:
+                            maior = lista_Arestas[cliente_anterior][i]
+                              
+                    for i in range(1, len(demandas)):        
+                        if lista_Arestas[cliente_anterior][i] > 0 and lista_Arestas[cliente_anterior][i] <= (menor + (varianca*(maior - menor))):
+                           
+                            if capacidade_atual - demandas[i] >= 0 and demandas[i] > 0:  
+                                LCR.append(i)                        
+                                           
+                    
+                    if len(LCR) > 0:
+                        cidade_random = random.sample(LCR, 1)                         
+                        capacidade_atual -= demandas[cidade_random[0]] 
+                        demandas[cidade_random[0]] = 0
+                        #print(demandas)
+                        rotafinal.append(cidade_random[0])
+                        
+                    else:
+                        #provavelmente não há mais cidades que caibam nessa rota, então ela deve encerrar. 
+                        cabe_Mais = False
+                        rotafinal.append(0) #volta para o deposito
+                    
+                else:              
+                    cabe_Mais = False
+                    rotafinal.append(0)       
+                    
+        #print(rotafinal)            
+        return rotafinal, demandas                 
+                                          
+   
+    def construct_meta(self, instance, graspMax, demandas):
+        
+        lista_Arestas = instance.data2    
+        capacidade_max = instance.capacidade          
+        solucao_final = []
+        melhorcusto = 0
+        
+        for i in range(graspMax):
+            melhor_rota, newdemanda  = self.construct_random(0, lista_Arestas, capacidade_max, demandas)            
+            busca_local = swap_method(melhor_rota, lista_Arestas)
+            
+            custo_atual = calculate_cost(busca_local, lista_Arestas)
+            
+            if custo_atual < melhorcusto or melhorcusto == 0:
+                melhorcusto = custo_atual
+                solucao_final = busca_local
+                melhor_demanda = newdemanda
+        
+        return solucao_final, melhor_demanda
+        
 
+
+
+      
+        
+   
+        
         
 
    

@@ -22,24 +22,43 @@ def main(args):
     vnd_solution = [0]*quantidade_de_veiculos
     custo_total = 0
 
+    if args.construction == 'meta':        
+        
+        for i in range(quantidade_de_veiculos):
+            
+            if i == 0:
+                initial_solution, novademanda = construction.construct_meta(instance, 100, instance.demanda)
+            else:
+                initial_solution, novademanda = construction.construct_meta(instance, 100, novademanda) 
+            
+            print("Rota %d pelo GRASP: " %(i+1), initial_solution)
+            custo[i] = calculate_cost(initial_solution, matriz_de_Custos)
+            print("Custo da rota %d = %d" % (i+1, custo[i]))
+            custo_total += custo[i]
+            if i == quantidade_de_veiculos-1:
+                print("Custo total pelo GRASP = %d\n" %custo_total) 
+                print(novademanda)#printa a lista de demanda para saber se tem clientes que estão ficando de fora
+      
+        
     if args.construction == 'nearest':
-        initial_solution = construction.construct_nearest(instance)      
+        initial_solution = construction.construct_nearest(instance)  
         custo_total = 0
         
-    for i in range(quantidade_de_veiculos):
-        print("Rota %d: " %(i+1),initial_solution[i])
-        custo[i] = calculate_cost(initial_solution[i], matriz_de_Custos)
-        print("Custo da rota %d = %d" % (i+1, custo[i]))
-        custo_total += custo[i]
-        if i == quantidade_de_veiculos-1:
-            print("Custo total pelo algoritmo guloso = %d\n" %custo_total)
+        for i in range(quantidade_de_veiculos):
+            print("Rota %d: " %(i+1),initial_solution[i])
+            custo[i] = calculate_cost(initial_solution[i], matriz_de_Custos)
+            print("Custo da rota %d = %d" % (i+1, custo[i]))
+            custo_total += custo[i]
+            if i == quantidade_de_veiculos-1:
+                print("Custo total pelo algoritmo guloso = %d\n" %custo_total)     
+    
 
                   
     if args.method in ['1opt']: 
         custo_total = 0    
                   
         for i in range(quantidade_de_veiculos):
-            one_opt_solution[i] = one_opt_method(initial_solution[i], matriz_de_Custos, is_first=(args.improvement == 'first'))
+            one_opt_solution[i] = one_opt_method(initial_solution[i], matriz_de_Custos)
             print("Rota %d do 1opt: " %(i+1),one_opt_solution[i])
             custo[i] = calculate_cost(one_opt_solution[i], matriz_de_Custos)
             print("Custo da rota %d do 1opt = %d" % (i+1, custo[i]))
@@ -53,7 +72,7 @@ def main(args):
         custo_total = 0  
         
         for i in range(quantidade_de_veiculos):
-            two_opt_solution[i] = two_opt_method(initial_solution[i], matriz_de_Custos, is_first=(args.improvement == 'first'))
+            two_opt_solution[i] = two_opt_method(initial_solution[i], matriz_de_Custos)
             print("Rota %d do 2opt: " %(i+1),two_opt_solution[i])
             custo[i] = calculate_cost(two_opt_solution[i], matriz_de_Custos)
             print("Custo da rota %d do 2opt = %d" % (i+1, custo[i]))
@@ -66,7 +85,7 @@ def main(args):
         custo_total = 0          
         
         for i in range(quantidade_de_veiculos):
-            swap[i] = swap_method(initial_solution[i], matriz_de_Custos, is_first=(args.improvement == 'first'))
+            swap[i] = swap_method(initial_solution[i], matriz_de_Custos)
             print("Rota %d do swap: " %(i+1),swap[i])
             custo[i] = calculate_cost(swap[i], matriz_de_Custos)
             print("Custo da rota %d do swap = %d" % (i+1, custo[i]))
