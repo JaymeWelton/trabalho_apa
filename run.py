@@ -15,24 +15,28 @@ def main(args):
     construction = ConstructionHeuristic()
     
     initial_solution = []
+    meta_solution = []
     custo = [0]*quantidade_de_veiculos    
     one_opt_solution = [0]*quantidade_de_veiculos   
     two_opt_solution=[0]*quantidade_de_veiculos 
     swap = [0]*quantidade_de_veiculos
     vnd_solution = [0]*quantidade_de_veiculos
     custo_total = 0
+    
 
     if args.construction == 'meta':        
         
         for i in range(quantidade_de_veiculos):
             
             if i == 0:
-                initial_solution, novademanda = construction.construct_meta(instance, 100, instance.demanda)
+                meta_solution, novademanda = construction.construct_meta(instance, 100, instance.demanda, args.vnd_methods)
+                initial_solution.append(meta_solution)
             else:
-                initial_solution, novademanda = construction.construct_meta(instance, 100, novademanda) 
+                meta_solution, novademanda = construction.construct_meta(instance, 100, novademanda, args.vnd_methods) 
+                initial_solution.append(meta_solution)
             
             print("Rota %d pelo GRASP: " %(i+1), initial_solution)
-            custo[i] = calculate_cost(initial_solution, matriz_de_Custos)
+            custo[i] = calculate_cost(meta_solution, matriz_de_Custos)
             print("Custo da rota %d = %d" % (i+1, custo[i]))
             custo_total += custo[i]
             if i == quantidade_de_veiculos-1:
@@ -98,7 +102,7 @@ def main(args):
         custo_total = 0  
         
         for i in range(quantidade_de_veiculos):
-            vnd_solution[i] = vnd_method(initial_solution[i], args.vnd_methods, matriz_de_Custos)
+            vnd_solution[i] = vnd_method(initial_solution[i], args.vnd_methods, matriz_de_Custos)            
             print("Rota %d do VND: " %(i+1),vnd_solution[i])
             custo[i] = calculate_cost(vnd_solution[i], matriz_de_Custos)
             print("Custo da rota %d do VND = %d" % (i+1, custo[i]))

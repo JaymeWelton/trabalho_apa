@@ -106,8 +106,9 @@ def vnd_method(solucao_inicial, metodos, matriz):
     menor_custo = calculate_cost(solucao_inicial, matriz)
    
     k = 0
+    
     methods_dict = {'swap': swap_method, '2opt': two_opt_method, '1opt': one_opt_method}
-
+    
     while k < len(metodos):
         # Procura a melhor solução usando os algorítmos de vizinhança
         metodo_selecionado = ""

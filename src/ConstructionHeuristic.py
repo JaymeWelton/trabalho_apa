@@ -2,7 +2,7 @@
 
 import random
 from src.utils.utils import calculate_cost 
-from src.neighborhoodsearch import swap_method
+from src.neighborhoodsearch import swap_method, two_opt_method, vnd_method
 
 class ConstructionHeuristic():
 
@@ -201,7 +201,7 @@ class ConstructionHeuristic():
         return rotafinal, demandas                 
                                           
    
-    def construct_meta(self, instance, graspMax, demandas):
+    def construct_meta(self, instance, graspMax, demandas, metodos):
         
         lista_Arestas = instance.data2    
         capacidade_max = instance.capacidade          
@@ -210,8 +210,9 @@ class ConstructionHeuristic():
         
         for i in range(graspMax):
             melhor_rota, newdemanda  = self.construct_random(0, lista_Arestas, capacidade_max, demandas)            
-            busca_local = swap_method(melhor_rota, lista_Arestas)
-            
+            #busca_local = swap_method(melhor_rota,lista_Arestas)
+            busca_local = two_opt_method(melhor_rota,lista_Arestas)
+            #busca_local = vnd_method(melhor_rota,metodos,lista_Arestas)
             custo_atual = calculate_cost(busca_local, lista_Arestas)
             
             if custo_atual < melhorcusto or melhorcusto == 0:
