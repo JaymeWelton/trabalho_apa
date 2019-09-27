@@ -6,6 +6,8 @@ from src.ConstructionHeuristic import ConstructionHeuristic
 from src.utils.utils import calculate_cost
 from src.neighborhoodsearch import swap_method, one_opt_method, two_opt_method, vnd_method
 
+import time
+import timeit
 
 def main(args):
     reader = InstanceReader()
@@ -115,5 +117,8 @@ def main(args):
 
 if __name__ == '__main__':
     args = Arguments().args
+    inicio = timeit.default_timer()
     main(args)
+    fim = timeit.default_timer()
     
+    print("Tempo total gasto: {}".format(fim - inicio))
